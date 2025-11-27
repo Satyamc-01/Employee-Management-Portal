@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, catchError, tap, finalize } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export type Department = string;
 
@@ -19,7 +20,7 @@ export interface Employee {
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
-  private readonly apiUrl = 'http://localhost:3000/employees';
+  private readonly apiUrl = environment.apiUrl;
 
   // internal state
   private employeesSubject = new BehaviorSubject<Employee[]>([]);

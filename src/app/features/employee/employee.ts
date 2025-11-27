@@ -59,9 +59,8 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
     MatSelectModule,
     MatDialogModule,
     RouterLink,
-    MatProgressSpinnerModule,
-    ConfirmDialog
-  ],
+    MatProgressSpinnerModule
+    ],
   templateUrl: './employee.html',
   styleUrls: ['./employee.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -196,7 +195,7 @@ ngOnInit(): void {
     });
   }
 
-  // ✏️ Edit employee (modal)
+  // Edit employee (modal)
   openEdit(emp: Employee) {
     const data: EmployeeFormData = {
       mode: 'edit',
@@ -215,7 +214,7 @@ ngOnInit(): void {
     });
   }
 
-  // 🗑️ Delete employee
+  // Delete employee
 delete(emp: Employee) {
   const dialogRef = this.dialog.open(ConfirmDialog, {
     width: '400px',
