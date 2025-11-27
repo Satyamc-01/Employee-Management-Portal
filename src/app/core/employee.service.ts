@@ -17,10 +17,16 @@ export interface Employee {
   attendanceThisMonth: number;
   leaveBalance: number;
 }
-
+const isBrowser = typeof window !== 'undefined';
+const isLocalhost = isBrowser && (
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+);
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
-  private readonly apiUrl = environment.apiUrl;
+  private readonly apiUrl = isLocalhost
+    ? 'http://localhost:3000/employees'  // 🔹 DEV: json-server
+    : 'assets/employees.json';  
 
   // internal state
   private employeesSubject = new BehaviorSubject<Employee[]>([]);
