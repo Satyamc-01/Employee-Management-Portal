@@ -1,0 +1,114 @@
+<section class="employees-container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>Employees</h1>
+        <div class="btn-parent">
+            <button mat-flat-button color="primary" (click)="openAdd()">Add Employee</button>
+            <button mat-flat-button color="primary ml-8" [routerLink]="['/dashboard']">
+                Dashboard
+            </button>
+        </div>
+    </div>
+
+    <div class="error-box" *ngIf="error$ | async as err">
+        {{ err }}
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+
+        <!-- Search -->
+        <mat-form-field appearance="outline">
+            <mat-label>Search employees</mat-label>
+            <input matInput (input)="onSearch($event.target.value)" />
+        </mat-form-field>
+
+        <!-- Department filter -->
+        <mat-form-field appearance="outline">
+            <mat-label>Department</mat-label>
+            <mat-select (selectionChange)="onDeptChange($event.value)">
+                <mat-option value="">All</mat-option>
+                <mat-option *ngFor="let d of departments$ | async" [value]="d">
+                    {{ d }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Status filter -->
+        <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select (selectionChange)="onStatusChange($event.value)">
+                <mat-option value="">All</mat-option>
+                <mat-option value="active">Active</mat-option>
+                <mat-option value="on_leave">On Leave</mat-option>
+                <mat-option value="inactive">Inactive</mat-option>
+                <mat-option value="trainee">Trainee</mat-option>
+                <mat-option value="probation">Probation</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+    </div>
+
+    <ng-container *ngIf="showLoader; else dataBlock">
+        <div class="loader">
+            <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+        </div>
+    </ng-container>
+
+
+    <ng-template #dataBlock>
+        <ng-container *ngIf="filteredEmployees$ | async as employees">
+
+            <!-- TABLE -->
+            <table mat-table [dataSource]="employees" class="mat-elevation-z2">
+                <!-- Name -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let emp">{{ emp.name }}</td>
+                </ng-container>
+
+                <!-- Department -->
+                <ng-container matColumnDef="department">
+                    <th mat-header-cell *matHeaderCellDef>Department</th>
+                    <td mat-cell *matCellDef="let emp">{{ emp.department }}</td>
+                </ng-container>
+
+                <!-- Designation -->
+                <ng-container matColumnDef="designation">
+                    <th mat-header-cell *matHeaderCellDef>Designation</th>
+                    <td mat-cell *matCellDef="let emp">{{ emp.designation }}</td>
+                </ng-container>
+
+                <!-- Status -->
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Status</th>
+                    <td mat-cell *matCellDef="let emp">{{ formatStatus(emp.status) }}</td>
+                </ng-container>
+
+                <!-- Actions -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Actions</th>
+                    <td mat-cell *matCellDef="let emp">
+                        <button mat-button color="primary" (click)="openEdit(emp)">Edit</button>
+                        <button mat-button color="warn" (click)="delete(emp)">Delete</button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="cols"></tr>
+                <tr mat-row *matRowDef="let row; columns: cols"></tr>
+
+
+
+            </table>
+
+            <!-- Optional: empty state -->
+            <p *ngIf="employees.length === 0">
+                No employees match current filters.
+            </p>
+
+        </ng-container>
+
+    </ng-template>
+
+</section>

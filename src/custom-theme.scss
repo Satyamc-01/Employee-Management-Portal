@@ -1,0 +1,83 @@
+
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+}
+
+a { display:inline-block; transition: all 0.3s; }
+
+
+
+@for $i from 1 through 30 {
+  .pt-#{$i * 2} {
+    padding-top: #{$i * 2}px !important;
+  }
+  .pb-#{$i * 2} {
+    padding-bottom: #{$i * 2}px !important;
+  }
+   .p-#{$i * 2} {
+    padding: #{$i * 2}px !important;
+  }
+  .mt-#{$i * 2} {
+    margin-top: #{$i * 2}px !important;
+  }
+  .mb-#{$i * 2} {
+    margin-bottom: #{$i * 2}px !important;
+  }
+   .m-#{$i * 2} {
+    margin: #{$i * 2}px !important;
+  }
+  .ml-#{$i * 2} {
+    margin-left: #{$i * 2}px !important;
+  }
+  .mr-#{$i * 2} {
+    margin-right: #{$i * 2}px !important;
+  }
+}
+
+
+@for $i from 1 through 4 {
+  .w#{$i * 25} {
+    width: #{$i * 25%} !important;
+  }
+
+  .min-w-#{$i * 25} {
+    min-width: #{$i * 25%} !important;
+  }
+
+  .max-w-#{$i * 25} {
+    max-width: #{$i * 25%} !important;
+  }
+}

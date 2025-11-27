@@ -1,0 +1,40 @@
+/* Dialog container spacing */
+.mat-dialog-content {
+  padding: 16px 0 !important;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #444;
+}
+
+/* Title styling */
+.mat-dialog-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+/* Buttons alignment & spacing */
+.mat-dialog-actions {
+  margin-top: 20px;
+  padding: 8px 0 !important;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Cancel button */
+.mat-dialog-actions button[mat-button] {
+  color: #555;
+}
+
+/* Confirm (warn) button */
+.mat-dialog-actions button[color="warn"] {
+  font-weight: 600;
+}
+
+/* Optional: add subtle rounded corners to the dialog itself */
+::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 12px !important;
+  padding: 20px 24px !important;
+}

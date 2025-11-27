@@ -1,0 +1,116 @@
+.dashboard-container {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.summary-card {
+  margin-bottom: 1.5rem;
+}
+
+.summary-number {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.summary-subtitle {
+  color: #666;
+}
+
+.section {
+  margin-top: 1rem;
+}
+
+.dept-tabs {
+  margin-bottom: 1rem;
+}
+
+.list-card {
+  margin-top: 0.5rem;
+}
+
+.secondary {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.employee-list {
+    cursor: pointer;
+}
+
+.employee-list:hover {
+    background-color: #82797916;
+}
+.dashboard-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.list-card,
+.detail-card {
+  min-height: 260px;
+}
+
+.employee-list {
+  display: block;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.employee-list:hover {
+  background-color: #f3f6ff; /* hover color */
+  transform: translateY(-1px);
+}
+
+.employee-list.active {
+  background-color: #e3f2fd; /* selected color */
+  border-left: 4px solid #1976d2;
+}
+
+.chip-stat > div:first-child {
+  font-weight: 500;
+}
+
+.secondary {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.chip-designation {
+  font-weight: 500;
+}
+
+.chip-dept {
+  margin-left: 0.25rem;
+  font-size: 0.8rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: #e0e0e0;
+}
+
+.muted {
+  color: #777;
+  margin-bottom: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+
+.employee-nav {
+  display: flex; justify-content:space-between; align-items: center;
+}

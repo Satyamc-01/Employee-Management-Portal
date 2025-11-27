@@ -1,0 +1,44 @@
+{
+  "employees": [
+    {
+      "id": "4",
+      "name": "David Brown",
+      "department": "Sales",
+      "designation": "Sales Executive",
+      "status": "active",
+      "attendanceThisMonth": 15,
+      "employmentStage": "trainee",
+      "leaveBalance": 3
+    },
+    {
+      "id": "38ec",
+      "name": "Naruto",
+      "department": "Sales",
+      "designation": "Marketing",
+      "status": "active",
+      "employmentStage": "confirmed",
+      "attendanceThisMonth": 25,
+      "leaveBalance": 0
+    },
+    {
+      "id": "a936",
+      "name": "Bob Lee",
+      "department": "Engineering",
+      "designation": "Frontend",
+      "status": "active",
+      "employmentStage": "probation",
+      "attendanceThisMonth": 22,
+      "leaveBalance": 3
+    },
+    {
+      "id": "12ca",
+      "name": "Carol Lee",
+      "department": "Engineering",
+      "designation": "Frontend",
+      "status": "on_leave",
+      "employmentStage": "trainee",
+      "attendanceThisMonth": 23,
+      "leaveBalance": 1
+    }
+  ]
+}

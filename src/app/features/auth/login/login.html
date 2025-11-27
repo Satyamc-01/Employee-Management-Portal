@@ -1,0 +1,65 @@
+<div class="login-wrapper">
+  <mat-card class="login-card">
+    <h1>Employee Portal</h1>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="field pt-16">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" />
+        <mat-error *ngIf="form.get('username')?.touched && form.get('username')?.invalid">
+          Username is required
+        </mat-error>
+      </mat-form-field>
+
+<mat-form-field appearance="outline" class="field psw-field">
+  <mat-label>Password</mat-label>
+  <input matInput type="password" formControlName="password" />
+
+  <mat-error *ngIf="form.get('password')?.hasError('required')">
+    Password is required
+  </mat-error>
+
+<mat-error *ngIf="form.get('password')?.getError('minLength') as err">
+  Minimum {{ err.requiredLength }} characters (currently {{ err.actualLength }})
+</mat-error>
+
+  <mat-error *ngIf="form.get('password')?.hasError('uppercase')">
+    Must contain at least one uppercase letter
+  </mat-error>
+
+  <mat-error *ngIf="form.get('password')?.hasError('lowercase')">
+    Must contain at least one lowercase letter
+  </mat-error>
+
+  <mat-error *ngIf="form.get('password')?.hasError('number')">
+    Must contain at least one number
+  </mat-error>
+
+  <mat-error *ngIf="form.get('password')?.hasError('specialChar')">
+    Must contain at least one special character
+  </mat-error>
+</mat-form-field>
+
+
+      <div class="error" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loading"
+        class="mt-16"
+      >
+        <ng-container *ngIf="!loading; else loadingTpl">
+          Login
+        </ng-container>
+        <ng-template #loadingTpl>
+          <mat-spinner diameter="20"></mat-spinner>
+        </ng-template>
+      </button>
+    </form>
+
+  </mat-card>
+</div>

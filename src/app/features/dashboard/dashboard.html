@@ -1,0 +1,140 @@
+<section class="dashboard-container">
+<h1> Employee Stat </h1>
+
+<!-- Top summary card -->
+<mat-card class="summary-card p-16">
+<mat-card-title>Total Employees</mat-card-title>
+<mat-card-content class="employee-nav pt-8">
+  <div class="summary-number">
+    {{ totalEmployees$ | async }}
+  </div>
+  <button mat-flat-button color="primary" [routerLink]="['/employees']">
+View All Employees
+</button>
+
+</mat-card-content>
+</mat-card>
+
+<!-- Employees by Department -->
+<section class="section">
+<h2>Employees by Department</h2>
+
+<ng-container *ngIf="departments$ | async as departments">
+
+  <mat-tab-group
+    class="dept-tabs"
+    (selectedTabChange)="onTabChange($event.index, departments)"
+  >
+    <mat-tab label="All"></mat-tab>
+    <mat-tab *ngFor="let dept of departments" [label]="dept"></mat-tab>
+  </mat-tab-group>
+
+  <!-- ⭐ list + detail side-by-side -->
+  <div class="layout">
+    <!-- LEFT: LIST -->
+    <mat-card class="list-card">
+<mat-card-content>
+
+<!-- 🔍 Search bar -->
+<mat-form-field appearance="outline" class="w100 mb-8">
+  <mat-label>Search employees</mat-label>
+  <input
+    matInput
+    type="text"
+    placeholder="Search by name, designation, department..."
+    (input)="onSearchChange($event.target.value)"
+  />
+</mat-form-field>
+
+<mat-nav-list *ngIf="filteredEmployees$ | async as employees">
+  <ng-container *ngIf="employees.length; else empty">
+    <a
+      class="employee-list w100 p-16"
+      *ngFor="let emp of employees; trackBy: trackById"
+      (click)="onSelect(emp)"
+      [class.active]="selectedEmployee?.id === emp.id"
+    >
+      <div class="chip-stat">
+        <div>{{ emp.name }}</div>
+        <div class="secondary">
+          <span class="chip-designation">{{ emp.designation }}</span> -
+          <span class="chip-dept">{{ emp.department }}</span>
+        </div>
+      </div>
+    </a>
+  </ng-container>
+
+  <ng-template #empty>
+    <p>No employees match this search.</p>
+  </ng-template>
+</mat-nav-list>
+</mat-card-content>
+</mat-card>
+
+
+    <!-- RIGHT: DETAILS -->
+    <mat-card class="detail-card" *ngIf="selectedEmployee as e">
+      <mat-card-title class="p-16">Employee Details</mat-card-title>
+      <mat-card-content>
+        <h3>{{ e.name }}</h3>
+        <p class="muted">{{ e.designation }} — {{ e.department }}</p>
+
+        <p><strong>Status:</strong> {{ formatStatus(e.status) }}</p>
+        <p><strong>Stage:</strong> {{ e.employmentStage }}</p>
+        <p><strong>Attendance This Month:</strong> {{ e.attendanceThisMonth }}</p>
+        <p><strong>Leave Balance:</strong> {{ e.leaveBalance }}</p>
+
+        <!-- ACTION BUTTONS -->
+        <div class="actions" *ngIf="!editMode">
+          <button mat-stroked-button color="primary" (click)="enableEdit()">Edit</button>
+          <button mat-stroked-button color="warn" (click)="deleteSelected()">Delete</button>
+        </div>
+
+        <!-- EDIT FORM -->
+        <form *ngIf="editMode" [formGroup]="detailForm" (ngSubmit)="saveChanges()">
+          <mat-form-field appearance="outline" class="w100">
+            <mat-label>Designation</mat-label>
+            <input matInput formControlName="designation">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w100">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option value="active">Active</mat-option>
+              <mat-option value="on_leave">On Leave</mat-option>
+              <mat-option value="inactive">Inactive</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w100">
+            <mat-label>Employment Stage</mat-label>
+            <mat-select formControlName="employmentStage">
+              <mat-option value="trainee">Trainee</mat-option>
+              <mat-option value="probation">Probation</mat-option>
+              <mat-option value="confirmed">Confirmed</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w100">
+            <mat-label>Attendance This Month</mat-label>
+            <input matInput type="number" formControlName="attendanceThisMonth">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w100">
+            <mat-label>Leave Balance</mat-label>
+            <input matInput type="number" formControlName="leaveBalance">
+          </mat-form-field>
+
+          <div class="actions">
+            <button type="button" mat-stroked-button (click)="cancelEdit()">Cancel</button>
+            <button type="submit" mat-raised-button color="primary" [disabled]="detailForm.invalid">
+              Save
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-container>
+</section>
+</section>
