@@ -26,7 +26,7 @@ const isLocalhost = isBrowser && (
 export class EmployeeService {
   private readonly apiUrl = isLocalhost
     ? 'http://localhost:3000/employees'  // 🔹 DEV: json-server
-    : 'assets/employees.json';  
+    : 'assets/employees';  
 
   // internal state
   private employeesSubject = new BehaviorSubject<Employee[]>([]);
