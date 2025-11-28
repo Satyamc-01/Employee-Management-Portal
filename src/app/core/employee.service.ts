@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, catchError, tap, finalize } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
+
 export type Department = string;
 
 export interface Employee {
@@ -17,17 +18,12 @@ export interface Employee {
   attendanceThisMonth: number;
   leaveBalance: number;
 }
-const isBrowser = typeof window !== 'undefined';
-const isLocalhost = isBrowser && (
-  window.location.hostname === 'localhost' ||
-  window.location.hostname === '127.0.0.1'
-);
+
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
   
   private readonly apiUrl = environment.apiUrl;
    
-  
   // internal state
   private employeesSubject = new BehaviorSubject<Employee[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
@@ -47,7 +43,9 @@ export class EmployeeService {
     map(list => Array.from(new Set(list.map(e => e.department))) as Department[])
   );
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    console.log('[EmployeeService] apiUrl in this build =', this.apiUrl);
+  }
 
   // ─────────────────────────────────────────
   // LOAD
