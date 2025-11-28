@@ -15,22 +15,56 @@ View All Employees
 </mat-card-content>
 </mat-card>
 
-<!-- Monthly Attendance Pie Chart -->
-  <mat-card class="summary-card p-16">
-  <mat-card-title>Attendance Distribution</mat-card-title>
-  <mat-card-content>
-    <ng-container *ngIf="pieChartData$ | async as pieData">
+<section class="chart-section">
+  <!-- Overall -->
+  <mat-card class="chart-card p-8">
+    <mat-card-title>Overall Attendance</mat-card-title>
+    <div class="chart-wrapper" *ngIf="pieOverall$ | async as data">
       <canvas
         baseChart
         [type]="pieChartType"
         [data]="{
           labels: pieChartLabels,
-          datasets: [{ data: pieData }]
-        }">
+          datasets: [{ data }]
+        }"
+      >
       </canvas>
-    </ng-container>
-  </mat-card-content>
-</mat-card>
+    </div>
+  </mat-card>
+
+  <!-- Engineering -->
+  <mat-card class="chart-card  p-8">
+    <mat-card-title>Engineering</mat-card-title>
+    <div class="chart-wrapper" *ngIf="pieEngineering$ | async as data">
+      <canvas
+        baseChart
+        [type]="pieChartType"
+        [data]="{
+          labels: pieChartLabels,
+          datasets: [{ data }]
+        }"
+      >
+      </canvas>
+    </div>
+  </mat-card>
+
+  <!-- HR -->
+  <mat-card class="chart-card  p-8">
+    <mat-card-title>HR</mat-card-title>
+    <div class="chart-wrapper" *ngIf="pieHR$ | async as data">
+      <canvas
+        baseChart
+        [type]="pieChartType"
+        [data]="{
+          labels: pieChartLabels,
+          datasets: [{ data }]
+        }"
+      >
+      </canvas>
+    </div>
+  </mat-card>
+</section>
+
 
 
 <!-- Employees by Department -->

@@ -114,3 +114,22 @@
 .employee-nav {
   display: flex; justify-content:space-between; align-items: center;
 }
+
+.chart-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 16px 0 24px;
+}
+
+.chart-card {
+  max-width: 280px;
+  flex: 1 1 240px;
+  text-align: center;
+}
+
+.chart-wrapper {
+  width: 200px;
+  height: 200px;
+  margin: 12px auto 0;
+}

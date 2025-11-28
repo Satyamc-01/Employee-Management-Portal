@@ -45,7 +45,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 // Charts
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartType } from 'chart.js';
+import { ChartType } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
@@ -93,16 +93,18 @@ export class Dashboard implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   // ───────── Pie chart props ─────────
-pieChartLabels: string[] = [
-  'Low (0–10 days)',
-  'Medium (11–15 days)',
-  'High (16+ days)'
-];
+  pieChartLabels: string[] = [
+    'Low (0–10 days)',
+    'Medium (11–15 days)',
+    'High (16+ days)'
+  ];
 
-pieChartType: ChartType = 'pie';
+  pieChartType: ChartType = 'pie';
 
-// just numbers, not ChartConfiguration
-pieChartData$!: Observable<number[]>;
+  // overall + per-department attendance data
+  pieOverall$!: Observable<number[]>;
+  pieEngineering$!: Observable<number[]>;
+  pieHR$!: Observable<number[]>;
 
   constructor(
     private employeeService: EmployeeService,
@@ -149,24 +151,22 @@ pieChartData$!: Observable<number[]>;
       })
     );
 
-    // 👉 Pie chart data: attendance distribution
-    this.pieChartData$ = this.employees$.pipe(
-  map(employees => {
-    let low = 0;
-    let medium = 0;
-    let high = 0;
+    // 👉 Overall attendance chart
+    this.pieOverall$ = this.employees$.pipe(
+      map(list => this.computeAttendance(list))
+    );
 
-    employees.forEach(e => {
-      const days = e.attendanceThisMonth ?? 0;
-      if (days <= 10)      low++;
-      else if (days <= 15) medium++;
-      else                 high++;
-    });
+    // 👉 Engineering only
+    this.pieEngineering$ = this.employees$.pipe(
+      map(list => list.filter(e => e.department === 'Engineering')),
+      map(list => this.computeAttendance(list))
+    );
 
-    // only numbers; we’ll build the Chart.js data object in the template
-    return [low, medium, high];
-  })
-);
+    // 👉 HR only
+    this.pieHR$ = this.employees$.pipe(
+      map(list => list.filter(e => e.department === 'HR')),
+      map(list => this.computeAttendance(list))
+    );
 
     // first employee active by default, and keep selection valid w.r.t filters
     this.filteredEmployees$
@@ -185,6 +185,20 @@ pieChartData$!: Observable<number[]>;
           this.editMode = false;
         }
       });
+  }
+
+  // helper for charts
+  private computeAttendance(employeeList: Employee[]): number[] {
+    let low = 0, medium = 0, high = 0;
+
+    employeeList.forEach(e => {
+      const days = e.attendanceThisMonth ?? 0;
+      if (days <= 10)      low++;
+      else if (days <= 15) medium++;
+      else                 high++;
+    });
+
+    return [low, medium, high];
   }
 
   // ───────── UI handlers ─────────
@@ -241,8 +255,6 @@ pieChartData$!: Observable<number[]>;
 
     const id = this.selectedEmployee.id;
     const changes = this.detailForm.value;
-
-    console.log('[Dashboard] updating id', id, 'with', changes);
 
     this.employeeService.updateEmployee(id, changes).subscribe(updated => {
       if (updated) {
