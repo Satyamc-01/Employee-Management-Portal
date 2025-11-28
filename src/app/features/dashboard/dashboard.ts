@@ -93,14 +93,16 @@ export class Dashboard implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   // ───────── Pie chart props ─────────
-  pieChartLabels: string[] = [
-    'Low (0–10 days)',
-    'Medium (11–15 days)',
-    'High (16+ days)'
-  ];
+pieChartLabels: string[] = [
+  'Low (0–10 days)',
+  'Medium (11–15 days)',
+  'High (16+ days)'
+];
 
- pieChartType: ChartType = 'pie';
-pieChartData$!: Observable<ChartConfiguration['data']>;
+pieChartType: ChartType = 'pie';
+
+// just numbers, not ChartConfiguration
+pieChartData$!: Observable<number[]>;
 
   constructor(
     private employeeService: EmployeeService,
@@ -149,34 +151,22 @@ pieChartData$!: Observable<ChartConfiguration['data']>;
 
     // 👉 Pie chart data: attendance distribution
     this.pieChartData$ = this.employees$.pipe(
-      map(employees => {
-        let low = 0;
-        let medium = 0;
-        let high = 0;
+  map(employees => {
+    let low = 0;
+    let medium = 0;
+    let high = 0;
 
-        employees.forEach(e => {
-          const days = e.attendanceThisMonth ?? 0;
-          if (days <= 10)      low++;
-          else if (days <= 15) medium++;
-          else                 high++;
-        });
+    employees.forEach(e => {
+      const days = e.attendanceThisMonth ?? 0;
+      if (days <= 10)      low++;
+      else if (days <= 15) medium++;
+      else                 high++;
+    });
 
-        const data: ChartConfiguration['data'] = {
-          labels: [
-            'Low (0–10 days)',
-            'Medium (11–15 days)',
-            'High (16+ days)'
-          ],
-          datasets: [
-            {
-              data: [low, medium, high]
-            }
-          ]
-        };
-
-        return data;
-      })
-    );
+    // only numbers; we’ll build the Chart.js data object in the template
+    return [low, medium, high];
+  })
+);
 
     // first employee active by default, and keep selection valid w.r.t filters
     this.filteredEmployees$

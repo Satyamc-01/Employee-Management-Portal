@@ -19,13 +19,19 @@ View All Employees
   <mat-card class="summary-card p-16">
   <mat-card-title>Attendance Distribution</mat-card-title>
   <mat-card-content>
-    <canvas
-      baseChart
-      [type]="pieChartType"
-      [data]="pieChartData$ | async">
-    </canvas>
+    <ng-container *ngIf="pieChartData$ | async as pieData">
+      <canvas
+        baseChart
+        [type]="pieChartType"
+        [data]="{
+          labels: pieChartLabels,
+          datasets: [{ data: pieData }]
+        }">
+      </canvas>
+    </ng-container>
   </mat-card-content>
 </mat-card>
+
 
 <!-- Employees by Department -->
 <section class="section">
