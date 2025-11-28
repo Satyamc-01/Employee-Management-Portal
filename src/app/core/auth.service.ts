@@ -2,34 +2,44 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 
-export interface UserAuth {
-  username: string;
-}
+const AUTH_KEY = 'employee_portal_auth';
 
 @Injectable({ providedIn: 'root' })
-
 export class AuthService {
-    private currentUserSubject = new BehaviorSubject<UserAuth | null>(null);
-  currentUser$ = this.currentUserSubject.asObservable();
+  private loggedInSubject = new BehaviorSubject<boolean>(this.readInitialState());
+  loggedIn$ = this.loggedInSubject.asObservable();
 
-  get currentUser(): UserAuth | null {
-    return this.currentUserSubject.value;
+  constructor() {}
+
+  private readInitialState(): boolean {
+    if (typeof window === 'undefined') return false;
+    const value = localStorage.getItem(AUTH_KEY);
+    return value === 'true';
   }
 
-  get isLoggedIn(): boolean {
-    return !!this.currentUserSubject.value;
+  isLoggedIn(): boolean {
+    return this.loggedInSubject.value;
   }
 
-  login(username: string, password: string): Observable<UserAuth> {
-    return of({ username }).pipe(
-      delay(200),
-      tap(user => {
-        this.currentUserSubject.next(user);
+  // mock async login that returns Observable<boolean>
+  login(username: string, password: string): Observable<boolean> {
+    const ok = !!username && !!password; // basic mock check
+
+    return of(ok).pipe(
+      delay(400), // fake network delay
+      tap(success => {
+        if (success && typeof window !== 'undefined') {
+          localStorage.setItem(AUTH_KEY, 'true');
+          this.loggedInSubject.next(true);
+        }
       })
     );
   }
 
   logout(): void {
-    this.currentUserSubject.next(null);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(AUTH_KEY);
+    }
+    this.loggedInSubject.next(false);
   }
 }
