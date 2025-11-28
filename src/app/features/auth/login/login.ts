@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -31,7 +31,7 @@ import { strongPasswordValidator } from '../../../validators/password.validator'
   styleUrl: './login.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Login {
+export class Login implements OnInit {
   form: FormGroup;
   loading = false;
   error: string | null = null;
@@ -88,5 +88,10 @@ export class Login {
         this.error = 'Login failed (mock).';
       }
     });
+  }
+  ngOnInit() {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/dashboard']);
+    }
   }
 }

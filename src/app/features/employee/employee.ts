@@ -175,7 +175,7 @@ ngOnInit(): void {
     this.statusFilterSubject.next(value);
   }
 
-  // ➕ Add employee (modal)
+  // Add employee (modal)
   openAdd() {
     const data: EmployeeFormData = {
       mode: 'create'

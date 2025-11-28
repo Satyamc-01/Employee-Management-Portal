@@ -32,6 +32,7 @@ import {
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
+
 // Angular Material
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -41,6 +42,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+
+// Charts
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration, ChartType } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
@@ -57,14 +62,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     MatButtonModule,
     RouterLink,
     MatDialogModule,
-    MatDialogModule
+    BaseChartDirective
   ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Dashboard implements OnDestroy {
-  // main streams
+  // ───────── Main streams ─────────
   employees$!: Observable<Employee[]>;
   totalEmployees$!: Observable<number>;
   departments$!: Observable<Department[]>;
@@ -87,17 +92,27 @@ export class Dashboard implements OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  // ───────── Pie chart props ─────────
+  pieChartLabels: string[] = [
+    'Low (0–10 days)',
+    'Medium (11–15 days)',
+    'High (16+ days)'
+  ];
+
+ pieChartType: ChartType = 'pie';
+pieChartData$!: Observable<ChartConfiguration['data']>;
+
   constructor(
     private employeeService: EmployeeService,
     private fb: FormBuilder,
-    private dialog: MatDialog  
-    ) {
+    private dialog: MatDialog
+  ) {
     // connect to service streams
     this.employees$ = this.employeeService.employees$;
     this.totalEmployees$ = this.employeeService.totalEmployees$;
     this.departments$ = this.employeeService.departments$;
 
-    // load from mock REST API
+    // load from mock REST API / assets
     this.employeeService.loadEmployees();
 
     // combine: employees + department + search
@@ -132,6 +147,37 @@ export class Dashboard implements OnDestroy {
       })
     );
 
+    // 👉 Pie chart data: attendance distribution
+    this.pieChartData$ = this.employees$.pipe(
+      map(employees => {
+        let low = 0;
+        let medium = 0;
+        let high = 0;
+
+        employees.forEach(e => {
+          const days = e.attendanceThisMonth ?? 0;
+          if (days <= 10)      low++;
+          else if (days <= 15) medium++;
+          else                 high++;
+        });
+
+        const data: ChartConfiguration['data'] = {
+          labels: [
+            'Low (0–10 days)',
+            'Medium (11–15 days)',
+            'High (16+ days)'
+          ],
+          datasets: [
+            {
+              data: [low, medium, high]
+            }
+          ]
+        };
+
+        return data;
+      })
+    );
+
     // first employee active by default, and keep selection valid w.r.t filters
     this.filteredEmployees$
       .pipe(takeUntil(this.destroy$))
@@ -151,7 +197,7 @@ export class Dashboard implements OnDestroy {
       });
   }
 
-  // called by mat-tab-group
+  // ───────── UI handlers ─────────
   onTabChange(index: number, departments: Department[]) {
     const dept = index === 0 ? null : departments[index - 1];
     this.selectedDeptSubject.next(dept);
@@ -159,7 +205,6 @@ export class Dashboard implements OnDestroy {
     this.editMode = false;
   }
 
-  // called by search input (input event)
   onSearchChange(value: string) {
     this.searchTermSubject.next(value);
   }
@@ -168,7 +213,6 @@ export class Dashboard implements OnDestroy {
     return emp.id;
   }
 
-  // when user clicks on an employee in list
   onSelect(emp: Employee) {
     this.selectedEmployee = emp;
     this.editMode = false;
@@ -218,39 +262,38 @@ export class Dashboard implements OnDestroy {
     });
   }
 
- deleteSelected() {
-  if (!this.selectedEmployee) return;
+  deleteSelected() {
+    if (!this.selectedEmployee) return;
 
-  const emp = this.selectedEmployee;
+    const emp = this.selectedEmployee;
 
-  const dialogRef = this.dialog.open(ConfirmDialog, {
-    width: '380px',
-    data: {
-      title: 'Delete Employee',
-      subtitle: 'This action cannot be undone.',
-      message: `Are you sure you want to delete "${emp.name}"?`,
-      confirmText: 'Delete',
-      cancelText: 'Cancel'
-    }
-  });
-
-dialogRef.afterClosed().subscribe((result: boolean) => {
-    if (!result) return;  // user clicked Cancel / backdrop
-
-    this.employeeService.deleteEmployee(emp.id).subscribe(success => {
-      if (success) {
-        this.selectedEmployee = null;
-        this.editMode = false;
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '380px',
+      data: {
+        title: 'Delete Employee',
+        subtitle: 'This action cannot be undone.',
+        message: `Are you sure you want to delete "${emp.name}"?`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
       }
     });
-  });
-}
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (!result) return;
+
+      this.employeeService.deleteEmployee(emp.id).subscribe(success => {
+        if (success) {
+          this.selectedEmployee = null;
+          this.editMode = false;
+        }
+      });
+    });
+  }
 
   formatStatus(status: string) {
-  if (!status) return '';
-  return status.replace('_', ' ');
-}
-
+    if (!status) return '';
+    return status.replace('_', ' ');
+  }
 
   ngOnDestroy() {
     this.destroy$.next();

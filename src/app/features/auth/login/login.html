@@ -18,8 +18,10 @@
   <mat-error *ngIf="form.get('password')?.hasError('required')">
     Password is required
   </mat-error>
-
-<mat-error *ngIf="form.get('password')?.getError('minLength') as err">
+<mat-error *ngIf="form.get('password')?.invalid">
+  Password must contain uppercase, lowercase, a number, a special character, and be at least 8 characters long.
+</mat-error>
+<!-- <mat-error *ngIf="form.get('password')?.getError('minLength') as err">
   Minimum {{ err.requiredLength }} characters (currently {{ err.actualLength }})
 </mat-error>
 
@@ -37,7 +39,7 @@
 
   <mat-error *ngIf="form.get('password')?.hasError('specialChar')">
     Must contain at least one special character
-  </mat-error>
+  </mat-error> -->
 </mat-form-field>
 
 

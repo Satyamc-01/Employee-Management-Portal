@@ -15,6 +15,18 @@ View All Employees
 </mat-card-content>
 </mat-card>
 
+<!-- Monthly Attendance Pie Chart -->
+  <mat-card class="summary-card p-16">
+  <mat-card-title>Attendance Distribution</mat-card-title>
+  <mat-card-content>
+    <canvas
+      baseChart
+      [type]="pieChartType"
+      [data]="pieChartData$ | async">
+    </canvas>
+  </mat-card-content>
+</mat-card>
+
 <!-- Employees by Department -->
 <section class="section">
 <h2>Employees by Department</h2>
