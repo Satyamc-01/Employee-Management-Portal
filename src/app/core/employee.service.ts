@@ -24,10 +24,10 @@ const isLocalhost = isBrowser && (
 );
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
-  private readonly apiUrl = isLocalhost
-    ? 'http://localhost:3000/employees'  // 🔹 DEV: json-server
-    : 'https://employee-management-dash.netlify.app/assets/employees';  
-
+  
+  private readonly apiUrl = environment.apiUrl;
+   
+  
   // internal state
   private employeesSubject = new BehaviorSubject<Employee[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
